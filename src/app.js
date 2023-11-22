@@ -63,11 +63,9 @@ async function payEntrance() {
 
     console.log("Entrance fee paid successfully");
 
-    // Clear existing images
     const imageContainer = document.getElementById("imageContainer");
     imageContainer.innerHTML = "";
 
-    // Display fetched images
     const images = await contract.viewImages();
     images.forEach((imageUrl) => {
       const imgElement = document.createElement("img");
