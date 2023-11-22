@@ -1,0 +1,66 @@
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.navbar {
+  background-color: black;
+  padding: 35px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.navbar-title {
+  font-size: 1.9em;
+  font-weight: bold;
+  margin-left: 40px;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 20px;
+}
+
+.payment-section {
+  margin-top: 20px;
+  text-align: center;
+  border: 1px solid black; /* Add a thin black color outline */
+  padding: 10px; /* Add padding to increase the box size */
+}
+
+#connectWalletBtn {
+    cursor: pointer;
+    padding: 8px 15px;
+    margin-right: 60px; /* Adjust the value as needed */
+    font-size: 1em;
+    background-color: DodgerBlue;
+    color: black; /* Add this line to set the text color to black */
+}
+#pay-button {
+  cursor: pointer;
+  padding: 8px 15px;
+  font-size: 1em;
+  background-color: MediumSeaGreen;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: url("../bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ... (other styles) */
