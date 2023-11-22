@@ -1,16 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-
-contract Museum is Ownable {
-    constructor() Ownable(msg.sender) {
-        // No need to call Ownable constructor as it doesn't require parameters
-        // Additional constructor logic if needed
-    }
-
-    // Entrance fee in Wei (0.05 ETH)
-    uint256 public constant ENTRANCE_FEE = 0.01 ether;
+contract Museum {
+    // Entrance fee in Wei (0.01 ETH)
+    uint256 public constant ENTRANCE_FEE = 0.0000000000001 ether;
 
     // Mapping to track whether a user has paid the entrance fee
     mapping(address => bool) public hasPaidEntrance;
@@ -42,8 +35,6 @@ contract Museum is Ownable {
         // Emit the EntrancePaid event
         emit EntrancePaid(msg.sender);
     }
-
-    // Constructor
 
     // Function to retrieve the list of predefined image URLs
     function viewImages()

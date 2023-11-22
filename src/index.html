@@ -14,13 +14,25 @@
       </button>
     </nav>
 
-    <div class="gallery">
-      <!-- Images will be displayed here -->
+    <div class="gallery" id="imageContainer">
+      <img
+        src="https://gateway.pinata.cloud/ipfs/QmSSrNfQSyGqX9P3v8UiTdNAs6vSGztuqYWvR3EExR4DXA"
+        class="image"
+      />
+      <img
+        src="https://gateway.pinata.cloud/ipfs/QmcTXJHNScozaRjpbWBSa5in1oSveNZ2ys2fqaguWBWnMX"
+        class="image"
+      />
+      <img
+        src="https://gateway.pinata.cloud/ipfs/QmahFv93WYBm455o6ixjbVfJFe9xgePnUVQG6Fnu3yp4M4"
+        class="image"
+      />
     </div>
+
     <div class="content">
       <h1>Welcome to NFT Museum !</h1>
       <p>
-        Here you can see all the beautiful NFTs. This NFT Meseum contains all
+        Here you can see all the beautiful NFTs. This NFT Museum contains all
         the legendary collection.
       </p>
       <br />
@@ -32,9 +44,8 @@
       <button id="pay-button" onclick="payEntrance()">Pay Entrance</button>
     </div>
 
-    <script src="web3.min.js"></script>
+    <script src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.3.6/dist/web3.min.js"></script>
-
     <script src="app.js"></script>
   </body>
 </html>

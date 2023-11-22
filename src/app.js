@@ -1,14 +1,6 @@
-// Replace 'YOUR_CONTRACT_ADDRESS' with the actual address of your deployed Solidity smart contract
-const contractAddress = "YOUR_CONTRACT_ADDRESS";
+//import Web3 from "web3";
 
-// Replace 'YOUR_PRIVATE_KEY' with the private key of the account that deploys the contract
-const privateKey = "YOUR_PRIVATE_KEY";
-
-// Replace 'YOUR_ABI' with the ABI (Application Binary Interface) of your Solidity smart contract
-const contractABI = YOUR_ABI;
-
-// Function to update UI based on the wallet connection status
-function updateUI() {
+async function updateUI() {
   const connectWalletBtn = document.getElementById("connectWalletBtn");
 
   if (window.ethereum && window.ethereum.selectedAddress) {
@@ -20,18 +12,15 @@ function updateUI() {
   }
 }
 
-// Connect to the user's MetaMask wallet
 async function connectWallet() {
   try {
-    // Request account access if needed
     await window.ethereum.enable();
     console.log("Connected to MetaMask");
 
-    // Initialize web3 after connecting
     const web3 = new Web3(window.ethereum);
 
     // Update UI
-    updateUI();
+    await updateUI();
 
     const connectWalletBtn = document.getElementById("connectWalletBtn");
     connectWalletBtn.textContent = "Connected";
@@ -41,10 +30,13 @@ async function connectWallet() {
   }
 }
 
-// Function to handle the payment of entrance fee
+// ...
+
 async function payEntrance() {
   try {
-    // Connect to the user's wallet
+    const response = await fetch("./Museum.json");
+    const MuseumJSON = await response.json();
+
     const web3 = new Web3(window.ethereum);
 
     if (!window.ethereum.selectedAddress) {
@@ -52,27 +44,47 @@ async function payEntrance() {
       return;
     }
 
-    // Get the user's accounts
     const accounts = await web3.eth.getAccounts();
-    const userAccount = accounts[0];
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
 
-    // Get the contract instance
-    const contract = new web3.eth.Contract(contractABI, contractAddress);
+    const contract = new ethers.Contract(
+      MuseumJSON.address,
+      MuseumJSON.abi,
+      signer
+    );
 
-    // Replace 'YOUR_AMOUNT_IN_WEI' with the actual entrance fee in Wei
-    const entranceFeeInWei = web3.utils.toWei("0.05", "ether");
+    const entranceFeeInWei = web3.utils.toWei("0.0000000000001", "ether");
 
     // Send the transaction to pay entrance fee
-    await contract.methods.payEntrance().send({
-      from: userAccount,
+    await contract.payEntrance({
       value: entranceFeeInWei,
     });
 
     console.log("Entrance fee paid successfully");
+
+    // Clear existing images
+    const imageContainer = document.getElementById("imageContainer");
+    imageContainer.innerHTML = "";
+
+    // Display fetched images
+    const images = await contract.viewImages();
+    images.forEach((imageUrl) => {
+      const imgElement = document.createElement("img");
+      imgElement.src = imageUrl;
+      imgElement.classList.add("image");
+      imageContainer.appendChild(imgElement);
+    });
+
+    // Hide unnecessary elements
+    document.querySelector(".content").style.display = "none";
+    document.querySelector(".payment-section").style.display = "none";
   } catch (error) {
     console.error("Error paying entrance fee", error);
   }
 }
+
+// ...
 
 // Initialize the UI
 updateUI();

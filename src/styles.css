@@ -31,17 +31,17 @@ body {
 .payment-section {
   margin-top: 20px;
   text-align: center;
-  border: 1px solid black; /* Add a thin black color outline */
-  padding: 10px; /* Add padding to increase the box size */
+  border: 1px solid black; /
+  padding: 10px; 
 }
 
 #connectWalletBtn {
     cursor: pointer;
     padding: 8px 15px;
-    margin-right: 60px; /* Adjust the value as needed */
+    margin-right: 60px;
     font-size: 1em;
     background-color: DodgerBlue;
-    color: black; /* Add this line to set the text color to black */
+    color: black; 
 }
 #pay-button {
   cursor: pointer;
@@ -63,4 +63,4 @@ body {
   background-repeat: no-repeat;
 }
 
-/* ... (other styles) */
+
