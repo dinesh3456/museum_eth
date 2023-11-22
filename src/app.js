@@ -32,6 +32,8 @@ async function connectWallet() {
 
 // ...
 
+// ...
+
 async function payEntrance() {
   try {
     const response = await fetch("./Museum.json");
@@ -56,13 +58,14 @@ async function payEntrance() {
 
     const entranceFeeInWei = web3.utils.toWei("0.0000000000001", "ether");
 
-    // Send the transaction to pay entrance fee
+    // Send the transaction to pay the entrance fee
     await contract.payEntrance({
       value: entranceFeeInWei,
     });
 
     console.log("Entrance fee paid successfully");
 
+    // Display fetched images after payment
     const imageContainer = document.getElementById("imageContainer");
     imageContainer.innerHTML = "";
 
@@ -77,6 +80,9 @@ async function payEntrance() {
     // Hide unnecessary elements
     document.querySelector(".content").style.display = "none";
     document.querySelector(".payment-section").style.display = "none";
+
+    // Show the image container
+    imageContainer.style.display = "block";
   } catch (error) {
     console.error("Error paying entrance fee", error);
   }
@@ -86,3 +92,8 @@ async function payEntrance() {
 
 // Initialize the UI
 updateUI();
+
+// Initially hide the image container, content, and payment section
+document.getElementById("imageContainer").style.display = "none";
+document.querySelector(".content").style.display = "block"; // Change to "none" if you want to hide it initially
+document.querySelector(".payment-section").style.display = "block"; // Change to "none" if you want to hide it initially
