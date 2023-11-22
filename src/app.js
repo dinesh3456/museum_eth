@@ -34,6 +34,8 @@ async function connectWallet() {
 
 // ...
 
+// ...
+
 async function payEntrance() {
   try {
     const response = await fetch("./Museum.json");
@@ -61,6 +63,7 @@ async function payEntrance() {
     // Send the transaction to pay the entrance fee
     await contract.payEntrance({
       value: entranceFeeInWei,
+      gasLimit: 300000, // Specify a reasonable gas limit
     });
 
     console.log("Entrance fee paid successfully");
@@ -84,9 +87,20 @@ async function payEntrance() {
     // Show the image container
     imageContainer.style.display = "block";
   } catch (error) {
-    console.error("Error paying entrance fee", error);
+    if (
+      error.data &&
+      error.data.originalError &&
+      error.data.originalError.message.includes("Entrance fee already paid")
+    ) {
+      // Handle the case where entrance fee is already paid
+      alert("Entrance fee already paid.");
+    } else {
+      console.error("Error paying entrance fee", error);
+    }
   }
 }
+
+// ...
 
 // ...
 
@@ -95,5 +109,5 @@ updateUI();
 
 // Initially hide the image container, content, and payment section
 document.getElementById("imageContainer").style.display = "none";
-document.querySelector(".content").style.display = "block"; // Change to "none" if you want to hide it initially
-document.querySelector(".payment-section").style.display = "block"; // Change to "none" if you want to hide it initially
+document.querySelector(".content").style.display = "block";
+document.querySelector(".payment-section").style.display = "block";
