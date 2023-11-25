@@ -1,0 +1,47 @@
+window.Museum = {
+  abi: [
+    {
+      type: "event",
+      anonymous: false,
+      name: "EntrancePaid",
+      inputs: [{ type: "address", name: "user", indexed: true }],
+    },
+    {
+      type: "function",
+      name: "ENTRANCE_FEE",
+      constant: true,
+      stateMutability: "view",
+      payable: false,
+      inputs: [],
+      outputs: [{ type: "uint256" }],
+    },
+    {
+      type: "function",
+      name: "imageUrls",
+      constant: true,
+      stateMutability: "view",
+      payable: false,
+      inputs: [{ type: "uint256" }],
+      outputs: [{ type: "string" }],
+    },
+    {
+      type: "function",
+      name: "payEntrance",
+      constant: false,
+      stateMutability: "payable",
+      payable: true,
+      inputs: [],
+      outputs: [],
+    },
+    {
+      type: "function",
+      name: "viewImages",
+      constant: true,
+      stateMutability: "view",
+      payable: false,
+      inputs: [],
+      outputs: [{ type: "string[]" }],
+    },
+  ],
+  address: "0xc002A3bC7f96c0392e2627409EC0Fe094ED149B8",
+};

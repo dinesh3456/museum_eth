@@ -30,18 +30,10 @@ async function connectWallet() {
   }
 }
 
-// ...
-
-// ...
-
-// ...
-
 async function payEntrance() {
   try {
-    const response = await fetch("./Museum.json");
-    const MuseumJSON = await response.json();
-
     const web3 = new Web3(window.ethereum);
+    document.getElementById("imageContainer").style.display = "none";
 
     if (!window.ethereum.selectedAddress) {
       alert("Please connect to the wallet before paying the entrance fee.");
@@ -49,30 +41,39 @@ async function payEntrance() {
     }
 
     const accounts = await web3.eth.getAccounts();
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
 
-    const contract = new ethers.Contract(
-      MuseumJSON.address,
-      MuseumJSON.abi,
-      signer
+    // Fetch Museum.json using fetch
+    // const response = await fetch("Museum.json");
+    // const MuseumJSON = await response.json();
+
+    const contract = new web3.eth.Contract(
+      window.Museum.abi,
+      window.Museum.address
     );
 
-    const entranceFeeInWei = web3.utils.toWei("0.0000000000001", "ether");
+    const entranceFeeInWei = web3.utils.toWei("0.0001", "ether");
+    const gasPrice = await web3.eth.getGasPrice();
 
-    // Send the transaction to pay the entrance fee
-    await contract.payEntrance({
+    // Create the transaction object
+    const transactionObject = {
+      from: accounts[0],
       value: entranceFeeInWei,
-      gasLimit: 300000, // Specify a reasonable gas limit
-    });
+      gas: 700000,
+      gasPrice: gasPrice,
+    };
 
-    console.log("Entrance fee paid successfully");
+    // Send the transaction using the contract instance
+    const tx = await contract.methods.payEntrance().send(transactionObject);
+    await web3.eth.getTransactionReceipt(tx.transactionHash);
+
+    console.log("Entrance fee paid successfully", tx);
+    alert("Entrance fee paid successfully");
 
     // Display fetched images after payment
     const imageContainer = document.getElementById("imageContainer");
     imageContainer.innerHTML = "";
 
-    const images = await contract.viewImages();
+    const images = await contract.methods.viewImages().call();
     images.forEach((imageUrl) => {
       const imgElement = document.createElement("img");
       imgElement.src = imageUrl;
@@ -87,24 +88,21 @@ async function payEntrance() {
     // Show the image container
     imageContainer.style.display = "block";
   } catch (error) {
-    if (
+    console.error("Error paying entrance fee", error);
+
+    if (error.message.includes("reverted")) {
+      alert("Entrance fee not paid");
+    } else if (
       error.data &&
       error.data.originalError &&
       error.data.originalError.message.includes("Entrance fee already paid")
     ) {
       // Handle the case where entrance fee is already paid
       alert("Entrance fee already paid.");
-    } else {
-      console.error("Error paying entrance fee", error);
     }
   }
 }
 
-// ...
-
-// ...
-
-// Initialize the UI
 updateUI();
 
 // Initially hide the image container, content, and payment section

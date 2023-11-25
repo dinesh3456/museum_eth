@@ -14,8 +14,9 @@ async function main() {
 
   // Pull the address and ABI out while you deploy, since that will be key in interacting with the smart contract later
   const data = {
-    address: museum.address,
+    contractName: museum.contractName,
     abi: JSON.parse(museum.interface.format("json")),
+    address: museum.address,
   };
 
   // This writes the ABI and address to the marketplace.json
