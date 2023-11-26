@@ -1,4 +1,5 @@
-//import Web3 from "web3";
+// import Web3 from "web3";
+let web3;
 
 async function updateUI() {
   const connectWalletBtn = document.getElementById("connectWalletBtn");
@@ -17,7 +18,7 @@ async function connectWallet() {
     await window.ethereum.enable();
     console.log("Connected to MetaMask");
 
-    const web3 = new Web3(window.ethereum);
+    web3 = new Web3(window.ethereum);
 
     // Update UI
     await updateUI();
@@ -32,7 +33,7 @@ async function connectWallet() {
 
 async function payEntrance() {
   try {
-    const web3 = new Web3(window.ethereum);
+    web3 = new Web3(window.ethereum);
     document.getElementById("imageContainer").style.display = "none";
 
     if (!window.ethereum.selectedAddress) {
@@ -42,9 +43,15 @@ async function payEntrance() {
 
     const accounts = await web3.eth.getAccounts();
 
-    // Fetch Museum.json using fetch
-    // const response = await fetch("Museum.json");
-    // const MuseumJSON = await response.json();
+    // Check if entrance fee is already paid
+    const entranceFeePaid =
+      sessionStorage.getItem("entranceFeePaid") === "true";
+
+    if (entranceFeePaid) {
+      // Display images directly
+      await displayImages();
+      return;
+    }
 
     const contract = new web3.eth.Contract(
       window.Museum.abi,
@@ -69,24 +76,11 @@ async function payEntrance() {
     console.log("Entrance fee paid successfully", tx);
     alert("Entrance fee paid successfully");
 
+    // Save entrance fee payment status to local storage
+    sessionStorage.setItem("entranceFeePaid", "true");
+
     // Display fetched images after payment
-    const imageContainer = document.getElementById("imageContainer");
-    imageContainer.innerHTML = "";
-
-    const images = await contract.methods.viewImages().call();
-    images.forEach((imageUrl) => {
-      const imgElement = document.createElement("img");
-      imgElement.src = imageUrl;
-      imgElement.classList.add("image");
-      imageContainer.appendChild(imgElement);
-    });
-
-    // Hide unnecessary elements
-    document.querySelector(".content").style.display = "none";
-    document.querySelector(".payment-section").style.display = "none";
-
-    // Show the image container
-    imageContainer.style.display = "block";
+    await displayImages();
   } catch (error) {
     console.error("Error paying entrance fee", error);
 
@@ -99,9 +93,64 @@ async function payEntrance() {
     ) {
       // Handle the case where entrance fee is already paid
       alert("Entrance fee already paid.");
+      await displayImages();
     }
   }
 }
+
+async function displayImages() {
+  web3 = new Web3(window.ethereum);
+
+  const imageContainer = document.getElementById("imageContainer");
+  imageContainer.innerHTML = "";
+
+  const contract = new web3.eth.Contract(
+    window.Museum.abi,
+    window.Museum.address
+  );
+
+  const images = await contract.methods.viewImages().call();
+
+  // Preload images
+  const preloadImages = images.map((imageUrl) => {
+    const img = new Image();
+    img.src = imageUrl;
+    return img;
+  });
+
+  // Wait for all images to be loaded
+  await Promise.all(preloadImages.map((img) => img.decode()));
+
+  images.forEach((imageUrl) => {
+    const imgElement = document.createElement("img");
+    imgElement.src = imageUrl;
+    imgElement.classList.add("image");
+    imageContainer.appendChild(imgElement);
+  });
+
+  // Hide unnecessary elements
+  document.querySelector(".content").style.display = "none";
+  document.querySelector(".payment-section").style.display = "none";
+
+  // Show the image container
+  imageContainer.style.display = "block";
+}
+
+window.onload = async function () {
+  try {
+    web3 = new Web3(window.ethereum);
+
+    const entranceFeePaid =
+      sessionStorage.getItem("entranceFeePaid") === "true";
+
+    if (entranceFeePaid) {
+      // Display images directly
+      await displayImages();
+    }
+  } catch (error) {
+    console.error("Error checking entrance fee status on page load", error);
+  }
+};
 
 updateUI();
 
